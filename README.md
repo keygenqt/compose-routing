@@ -3,6 +3,8 @@ Compose Navigator Routing
 
 ![picture](data/just-image.png)
 
+### Idea
+
 Interfaces that make it easier to work with navigator routing.
 
 ### Usage
