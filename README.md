@@ -7,6 +7,17 @@ Compose Navigator Routing
 
 Interfaces that make it easier to work with navigator routing.
 
+#### Connection:
+
+```gradle
+repositories {
+    maven("https://artifactory.keygenqt.com/artifactory/open-source")
+}
+dependencies {
+    implementation("com.keygenqt.routing:compose-routing:0.0.1")
+}
+```
+
 ### Usage
 
 ```kotlin
@@ -63,17 +74,6 @@ interface ProfileNavActions {
             }
         }
     }
-}
-```
-
-#### Connection:
-
-```gradle
-repositories {
-    maven("https://artifactory.keygenqt.com/artifactory/open-source")
-}
-dependencies {
-    implementation("com.keygenqt.routing:compose-routing:0.0.1")
 }
 ```
 
