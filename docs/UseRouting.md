@@ -4,6 +4,7 @@ Then you can easily create as many events as you need by manipulating them
 
 ```kotlin
 interface ProfileNavActions {
+    
     val controller: NavHostController
 
     fun navigateToViewProfileScreen() {
