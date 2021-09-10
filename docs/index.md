@@ -1,37 +1,47 @@
-## Welcome to GitHub Pages
+## Surf Accompanist
 
-You can use the [editor on GitHub](https://github.com/keygenqt/compose-routing/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
+![picture](https://github.com/keygenqt/compose-routing/blob/master/data/just-image.png?raw=true)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Interfaces that make it easier to work with navigator routing.
 
-### Markdown
+## Connection
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fartifactory.keygenqt.com%2Fartifactory%2Fopen-source%2Fcom%2Fkeygenqt%2Frouting%2Fcompose-routing%2Fmaven-metadata.xml)
 
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```gradle
+repositories {
+    maven("https://artifactory.keygenqt.com/artifactory/open-source")
+}
+dependencies {
+    implementation("com.keygenqt.routing:compose-routing:{version}")
+}
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## Features:
 
-### Jekyll Themes
+### ![picture](https://github.com/google/material-design-icons/blob/master/png/action/note_add/materialicons/18dp/1x/baseline_note_add_black_18dp.png?raw=true) [Create Routing](https://keygenqt.github.io/compose-routing/CreateRouting)
+With a set of interfaces, you can create a routed object
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/keygenqt/compose-routing/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+### ![picture](https://github.com/google/material-design-icons/blob/master/png/action/outbox/materialicons/18dp/1x/baseline_outbox_black_18dp.png?raw=true) [Common Routing](https://keygenqt.github.io/compose-routing/CommonRouting)
+Which will allow you to do general routing for the application
 
-### Support or Contact
+### ![picture](https://github.com/google/material-design-icons/blob/master/png/maps/alt_route/materialicons/18dp/1x/baseline_alt_route_black_18dp.png?raw=true) [Use Routing](https://keygenqt.github.io/compose-routing/UseRouting)
+Then you can easily create as many events as you need by manipulating them
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+## License
+
+```
+Copyright 2021 Vitaliy Zarubin
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
