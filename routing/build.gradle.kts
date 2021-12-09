@@ -6,15 +6,16 @@ plugins {
 }
 
 // lib info
-version = "0.0.1"
-group = "ru.surfstudio.compose"
+val libVersion: String by project
+val libGroup: String by project
 
 publishing {
     publications {
         register("aar", MavenPublication::class) {
-            groupId = group.toString()
+            version = libVersion
+            groupId = libGroup
             artifactId = project.name
-            artifact("$buildDir/outputs/aar/compose-routing-$version-release.aar")
+            artifact("$buildDir/outputs/aar/compose-routing-$libVersion-release.aar")
         }
     }
 }
@@ -41,7 +42,7 @@ android {
     defaultConfig {
         minSdk = 23
         targetSdk = 31
-        setProperty("archivesBaseName", "compose-routing-$version")
+        setProperty("archivesBaseName", "compose-routing-$libVersion")
     }
 
     buildTypes {
