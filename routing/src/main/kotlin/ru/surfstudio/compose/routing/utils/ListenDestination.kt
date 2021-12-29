@@ -55,7 +55,7 @@ class ListenDestination {
         fun Init(
             startDestination: String,
             controller: NavHostController,
-            onChange: (destination: NavDestination) -> Unit
+            onChange: (destination: NavDestination) -> Unit = {}
         ) {
             START_DESTINATION = startDestination
             controller.AddListenChangeNavigation {
