@@ -7,21 +7,19 @@ Simplifies and systematizes the work with routing
  * Routing for [ReposScreen]
  */
 object RepoRoute {
-    val screen = object : NavigationRouteArgument2 {
-        override val argument0: String = "id"
-        override val argument1: String = "url"
-        override val route: String = "RepoRouteDefault/{$argument0}/{$argument1}"
+    val screen = object : NavigationRoute {
+        override val route: String = "RepoRouteScreen"
     }
 
     val screenWithId = object : NavigationRouteArgument1 {
         override val argument0: String = "id"
-        override val route: String = "RepoRouteDefault/{$argument0}"
+        override val route: String = "RepoRouteScreenWithId/{$argument0}"
     }
 
     val screenWithIdAndUrl = object : NavigationRouteArgument2 {
         override val argument0: String = "id"
         override val argument1: String = "url"
-        override val route: String = "RepoRouteDefault/{$argument0}/{$argument1}"
+        override val route: String = "RepoRouteScreenWithIdAndUrl/{$argument0}/{$argument1}"
     }
 }
 ```
