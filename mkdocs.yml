@@ -1,0 +1,22 @@
+site_name: Compose Routing
+
+# Repository
+repo_name: 'Compose Routing'
+repo_url: 'https://github.com/keygenqt/compose-routing'
+
+# Navigation
+nav:
+  - 'Overview': index.md
+  - 'Navigation dispatcher': navigation_dispatcher.md
+  - 'Navigation route': navigation_route.md
+
+# Configuration
+theme:
+  name: 'material'
+  language: 'en'
+  palette:
+    primary: 'black'
+    accent: 'deep orange'
+  font:
+    text: 'Roboto'
+    code: 'JetBrains Mono'
