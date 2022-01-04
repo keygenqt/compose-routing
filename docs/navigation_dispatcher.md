@@ -76,3 +76,25 @@ navigationDispatcher.enablePager()
 navigationDispatcher.disablePager()
 ```
 
+### Usage toRoutePopStack
+
+```kotlin
+val navigationDispatcher = LocalNavigationDispatcher.current
+
+/**
+ * To welcome page
+ */
+fun toWelcome() {
+    controller.navigate(OtherNavRoute.welcome.default.route)
+}
+
+/**
+ * To login page
+ */
+fun toSignIn() {
+    controller.navigate(OtherNavRoute.signIn.default.route)
+}
+
+// clear back stack and open Welcome page + SignIn page
+navigationDispatcher.toRoutePopStack(::toWelcome, ::toSignIn)
+```
