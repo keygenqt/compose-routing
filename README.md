@@ -1,8 +1,10 @@
 ## Compose Routing
 
-![picture](https://github.com/keygenqt/compose-routing/blob/master/data/just-image.png?raw=true)
+Rooting in Jetpack Compose
 
-Interfaces that make it easier to work with navigator routing.
+### ![picture](https://github.com/google/material-design-icons/blob/master/png/action/view_day/materialicons/18dp/1x/baseline_view_day_black_18dp.png?raw=true) [More details](https://keygenqt.github.io/compose-routing/)
+
+![picture](https://github.com/keygenqt/compose-routing/blob/master/data/just-image.png?raw=true)
 
 ## Connection
 
@@ -16,17 +18,6 @@ dependencies {
     implementation("com.keygenqt.routing:compose-routing:{version}")
 }
 ```
-
-## Features:
-
-### ![picture](https://github.com/google/material-design-icons/blob/master/png/action/note_add/materialicons/18dp/1x/baseline_note_add_black_18dp.png?raw=true) [Create Routing](https://keygenqt.github.io/compose-routing/CreateRouting)
-With a set of interfaces, you can create a routed object
-
-### ![picture](https://github.com/google/material-design-icons/blob/master/png/action/outbox/materialicons/18dp/1x/baseline_outbox_black_18dp.png?raw=true) [Common Routing](https://keygenqt.github.io/compose-routing/CommonRouting)
-Which will allow you to do general routing for the application
-
-### ![picture](https://github.com/google/material-design-icons/blob/master/png/maps/alt_route/materialicons/18dp/1x/baseline_alt_route_black_18dp.png?raw=true) [Use Routing](https://keygenqt.github.io/compose-routing/UseRouting)
-Then you can easily create as many events as you need by manipulating them
 
 ## License
 
