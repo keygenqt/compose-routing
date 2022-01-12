@@ -37,8 +37,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 class NavigationDispatcher(
     lifecycle: Lifecycle,
-    private val controller: NavHostController,
-    private val backPressedDispatcher: OnBackPressedDispatcher
+    val controller: NavHostController,
+    val backPressedDispatcher: OnBackPressedDispatcher
 ) : DefaultLifecycleObserver {
 
     /**
