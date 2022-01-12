@@ -15,62 +15,54 @@
  */
 package ru.surfstudio.compose.routing
 
-interface NavScreen {
+interface NavigationRoute {
     val route: String
 }
 
-interface NavScreenWithArgument {
-    val routeWithArgument: String
+interface NavigationRouteArgument1 : NavigationRoute {
     val argument0: String
-    fun getRoute(argument0: String?): String {
-        return routeWithArgument
-            .replace("{${this.argument0}}", argument0 ?: "")
-    }
+    fun routeWithArguments(argument0: String?) = route
+        .replace("{${this.argument0}}", argument0 ?: "")
 }
 
-interface NavScreenWithArgument2 : NavScreenWithArgument {
+interface NavigationRouteArgument2 : NavigationRouteArgument1 {
     val argument1: String
-    fun getRoute(argument0: String?, argument1: String?): String {
-        return getRoute(argument0)
-            .replace("{${this.argument1}}", argument1 ?: "")
-    }
+    fun routeWithArguments(
+        argument0: String?,
+        argument1: String?,
+    ) = routeWithArguments(argument0)
+        .replace("{${this.argument1}}", argument1 ?: "")
 }
 
-interface NavScreenWithArgument3 : NavScreenWithArgument2 {
+interface NavigationRouteArgument3 : NavigationRouteArgument2 {
     val argument2: String
-    fun getRoute(
+    fun routeWithArguments(
         argument0: String?,
         argument1: String?,
         argument2: String?,
-    ): String {
-        return getRoute(argument0, argument1)
-            .replace("{${this.argument2}}", argument2 ?: "")
-    }
+    ) = routeWithArguments(argument0, argument1)
+        .replace("{${this.argument2}}", argument2 ?: "")
 }
 
-interface NavScreenWithArgument4 : NavScreenWithArgument3 {
+interface NavigationRouteArgument4 : NavigationRouteArgument3 {
     val argument3: String
-    fun getRoute(
+    fun routeWithArguments(
         argument0: String?,
         argument1: String?,
         argument2: String?,
         argument3: String?,
-    ): String {
-        return getRoute(argument0, argument1, argument2)
-            .replace("{${this.argument3}}", argument3 ?: "")
-    }
+    ) = routeWithArguments(argument0, argument1, argument2)
+        .replace("{${this.argument3}}", argument3 ?: "")
 }
 
-interface NavScreenWithArgument5 : NavScreenWithArgument4 {
+interface NavigationRouteArgument5 : NavigationRouteArgument4 {
     val argument4: String
-    fun getRoute(
+    fun routeWithArguments(
         argument0: String?,
         argument1: String?,
         argument2: String?,
         argument3: String?,
         argument4: String?,
-    ): String {
-        return getRoute(argument0, argument1, argument2, argument3)
-            .replace("{${this.argument4}}", argument4 ?: "")
-    }
+    ) = routeWithArguments(argument0, argument1, argument2, argument3)
+        .replace("{${this.argument4}}", argument4 ?: "")
 }

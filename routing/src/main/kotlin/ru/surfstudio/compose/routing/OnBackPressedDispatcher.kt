@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ru.surfstudio.compose.routing.extension
+package ru.surfstudio.compose.routing
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
@@ -24,7 +24,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
-import ru.surfstudio.compose.routing.utils.ListenDestination
 
 /**
  * BackPressedDispatcher with [OnBackPressedCallback] by compose status
@@ -44,11 +43,7 @@ fun NavigationDispatcherCallback(
     val navigatorButton = remember {
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (ListenDestination.isClearStart()) {
-                    remove()
-                } else {
-                    emit.invoke()
-                }
+                emit.invoke()
             }
         }
     }
