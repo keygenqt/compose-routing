@@ -17,7 +17,7 @@ package ru.surfstudio.compose.routing
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.*
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -28,6 +28,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -52,6 +53,16 @@ class NavigationDispatcher(
      */
     var startDestination: NavDestination? = null
         private set
+
+    /**
+     * Save back destination
+     */
+    private var backDestination: NavDestination? = null
+
+    /**
+     * Data flow for back with data
+     */
+    private val listListener: MutableMap<String, Any> = mutableMapOf()
 
     /**
      * CoroutineScope for pager
@@ -113,6 +124,8 @@ class NavigationDispatcher(
             if (startDestination?.route == destination.route && !isBack) {
                 firstDestinationCount++
             }
+            // save back destination
+            backDestination = currentDestinationMutableFlow.value
             // save current destination
             currentDestinationMutableFlow.value = destination
             // disable destination direction
@@ -189,6 +202,28 @@ class NavigationDispatcher(
         } ?: run {
             backPressed()
         }
+    }
+
+    /**
+     * Create flow for listening
+     */
+    @Composable
+    fun <T> onBackPressedData(value: T? = null): StateFlow<T?> {
+        val route by remember { mutableStateOf(currentDestination?.route.orEmpty()) }
+        if (!listListener.containsKey(route)) {
+            listListener[route] = MutableStateFlow(value)
+        }
+        return (listListener[route] as MutableStateFlow<T?>).asStateFlow()
+    }
+
+    /**
+     * Step to back on navigation with data
+     */
+    fun <T> onBackPressed(data: T) {
+        listListener[backDestination?.route]?.let {
+            (it as MutableStateFlow<T?>).value = data
+        }
+        onBackPressed()
     }
 
     /**
