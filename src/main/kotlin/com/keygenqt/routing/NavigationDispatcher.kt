@@ -15,9 +15,10 @@
  */
 package com.keygenqt.routing
 
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.*
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -27,6 +28,10 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -65,6 +70,11 @@ class NavigationDispatcher(
     private var _currentDestination: NavDestination? = null
 
     /**
+     * Save back destination
+     */
+    private var _backDestination: NavDestination? = null
+
+    /**
      * Navigation [PagerState]
      */
     private var _pager: PagerState? = null
@@ -88,6 +98,11 @@ class NavigationDispatcher(
      * Lifecycle owner
      */
     private var lifecycleOwner: LifecycleOwner? = null
+
+    /**
+     * Data flow for back with data
+     */
+    private val listListener: MutableMap<String, Any> = mutableMapOf()
 
     /**
      * Custom navigator callback
@@ -115,6 +130,8 @@ class NavigationDispatcher(
             if (_startDestination?.route == destination.route && !_isBack) {
                 _firstDestinationCount++
             }
+            // save back destination
+            _backDestination = _currentDestination
             // save current destination
             _currentDestination = destination
             // disable destination direction
@@ -176,6 +193,28 @@ class NavigationDispatcher(
         } ?: run {
             backPressed()
         }
+    }
+
+    /**
+     * Create flow for listening
+     */
+    @Composable
+    fun <T> onBackPressedData(value: T? = null): StateFlow<T?> {
+        val route by remember { mutableStateOf(currentDestination?.route ?: "") }
+        if (!listListener.containsKey(route)) {
+             listListener[route] = MutableStateFlow(value)
+        }
+        return (listListener[route] as MutableStateFlow<T?>).asStateFlow()
+    }
+
+    /**
+     * Step to back on navigation with data
+     */
+    fun <T> onBackPressed(data: T) {
+        listListener[_backDestination?.route]?.let {
+            (it as MutableStateFlow<T?>).value = data
+        }
+        onBackPressed()
     }
 
     /**

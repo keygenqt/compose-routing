@@ -10,7 +10,7 @@ val kotlinVersion: String = findProperty("kotlinVersion") as? String ?: "1.6.0"
 val accompanistVersion: String = findProperty("accompanistVersion") as? String ?: "0.22.0-rc"
 val lifecycleVersion: String = findProperty("lifecycleVersion") as? String ?: "2.4.0"
 
-version = "0.0.2"
+version = "0.0.3"
 group = "com.keygenqt.routing"
 
 spotless {
@@ -57,6 +57,14 @@ android {
 
     kotlinOptions {
         freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeVersion.get()
+    }
+
+    buildFeatures {
+        compose = true
     }
 }
 
