@@ -6,9 +6,10 @@ plugins {
 }
 
 // dependencies versions
-val kotlinVersion: String = findProperty("kotlinVersion") as? String ?: "1.6.0"
+val kotlinVersion: String = findProperty("kotlinVersion") as? String ?: "1.6.10"
 val composeVersion: String = findProperty("composeVersion") as? String ?: "1.1.0-rc01"
-val accompanistVersion: String = findProperty("accompanistVersion") as? String ?: "0.21.5-rc"
+val accompanistVersion: String = findProperty("googleAccompanistVersion") as? String ?: "0.21.5-rc"
+val activityComposeVersion: String = findProperty("activityComposeVersion") as? String ?: "1.5.0-alpha01"
 
 // lib info
 val libVersion: String by project
@@ -70,10 +71,10 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinVersion")
+    implementation("androidx.navigation:navigation-compose:2.5.0-alpha01")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
     implementation("androidx.compose.ui:ui:$composeVersion")
-    implementation("androidx.activity:activity-compose:1.4.0")
+    implementation("androidx.activity:activity-compose:$activityComposeVersion")
     implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
-    implementation("androidx.navigation:navigation-compose:2.4.0-rc01")
 }

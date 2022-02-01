@@ -30,6 +30,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -299,7 +300,7 @@ class NavigationDispatcher(
     fun listenChangePager(change: (page: Int, isBack: Boolean) -> Unit = { _, _ -> }) {
         pager?.let {
             scope?.launch {
-                snapshotFlow { it.currentPage }.collect {
+                snapshotFlow { it.currentPage }.collectLatest {
                     change.invoke(it, pagerIndex > it)
                     pagerIndex = it
                 }
