@@ -43,6 +43,14 @@ class NavigationDispatcher(
     val backPressedDispatcher: OnBackPressedDispatcher
 ) : DefaultLifecycleObserver {
 
+    override fun onCreate(owner: LifecycleOwner) {}
+
+    override fun onStart(owner: LifecycleOwner) {}
+
+    override fun onStop(owner: LifecycleOwner) {}
+
+    override fun onDestroy(owner: LifecycleOwner) {}
+
     /**
      * Lifecycle owner
      */
