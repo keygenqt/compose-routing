@@ -109,6 +109,11 @@ class NavigationDispatcher(
     private var pagerIndex: Int = 0
 
     /**
+     * Custom back press callback
+     */
+    private var onBackPressedCallback: (() -> Boolean)? = null
+
+    /**
      * Custom navigator callback
      */
     private val navigatorCallback = object : OnBackPressedCallback(true) {
@@ -122,8 +127,8 @@ class NavigationDispatcher(
      */
     private val callback = NavController.OnDestinationChangedListener { controller, _, _ ->
         controller.currentDestination?.let { destination ->
-            // clear pager
-            clearPager()
+            // clear data
+            clearData()
             // add start destination
             if (startDestination == null) {
                 startDestination = destination
@@ -150,13 +155,14 @@ class NavigationDispatcher(
     }
 
     /**
-     * Clear data pager
+     * Clear data after change route
      */
-    private fun clearPager() {
+    private fun clearData() {
         pager = null
         scope = null
         pagerIndex = 0
         skipOnBackPressPager = listOf()
+        onBackPressedCallback = null
     }
 
     override fun onResume(owner: LifecycleOwner) {
@@ -193,23 +199,25 @@ class NavigationDispatcher(
      * Step to back on navigation or pager
      */
     fun onBackPressed() {
-        pager?.let {
-            if (!it.isScrollInProgress) {
-                if (it.currentPage > 0 && pagerEnable) {
-                    scope?.launch {
-                        val index = it.currentPage - 1
-                        if (skipOnBackPressPager.contains(index) && index - 1 >= 0) {
-                            it.animateScrollToPage(index - 1)
-                        } else {
-                            it.animateScrollToPage(index)
+        if (onBackPressedCallback == null || onBackPressedCallback?.invoke() != false) {
+            pager?.let {
+                if (!it.isScrollInProgress) {
+                    if (it.currentPage > 0 && pagerEnable) {
+                        scope?.launch {
+                            val index = it.currentPage - 1
+                            if (skipOnBackPressPager.contains(index) && index - 1 >= 0) {
+                                it.animateScrollToPage(index - 1)
+                            } else {
+                                it.animateScrollToPage(index)
+                            }
                         }
+                    } else {
+                        backPressed()
                     }
-                } else {
-                    backPressed()
                 }
+            } ?: run {
+                backPressed()
             }
-        } ?: run {
-            backPressed()
         }
     }
 
@@ -328,6 +336,15 @@ class NavigationDispatcher(
      */
     fun disablePager() {
         pagerEnable = false
+    }
+
+    /**
+     * Set on back press custom callback
+     */
+    fun setOnBackPressed(onBackPressedCallback: () -> Boolean) {
+        if (this.onBackPressedCallback == null) {
+            this.onBackPressedCallback = onBackPressedCallback
+        }
     }
 
     companion object {
