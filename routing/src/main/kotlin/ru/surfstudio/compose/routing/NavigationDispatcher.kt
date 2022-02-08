@@ -114,6 +114,11 @@ class NavigationDispatcher(
     private var onBackPressedCallback: (() -> Boolean)? = null
 
     /**
+     * Hold callback on back press for change navigation
+     */
+    private var isHoldBackPressedCallback: Boolean = false
+
+    /**
      * Custom navigator callback
      */
     private val navigatorCallback = object : OnBackPressedCallback(true) {
@@ -158,11 +163,16 @@ class NavigationDispatcher(
      * Clear data after change route
      */
     private fun clearData() {
+        // clear data
         pager = null
         scope = null
         pagerIndex = 0
         skipOnBackPressPager = listOf()
-        onBackPressedCallback = null
+
+        // clear callback if not hold
+        if (!isHoldBackPressedCallback) {
+            onBackPressedCallback = null
+        }
     }
 
     override fun onResume(owner: LifecycleOwner) {
@@ -180,9 +190,19 @@ class NavigationDispatcher(
     }
 
     /**
+     * Check on back press custom callback
+     */
+    fun hasBackPressedCallback(): Boolean {
+        return onBackPressedCallback != null
+    }
+
+    /**
      * Check is navigation stack empty
      */
     fun hasEnabledCallbacks(): Boolean {
+        if (onBackPressedCallback != null) {
+            return false
+        }
         // check pager
         if (pager != null && pagerEnable && pager!!.currentPage > 0) {
             return true
@@ -341,10 +361,22 @@ class NavigationDispatcher(
     /**
      * Set on back press custom callback
      */
-    fun setOnBackPressed(onBackPressedCallback: () -> Boolean) {
-        if (this.onBackPressedCallback == null) {
-            this.onBackPressedCallback = onBackPressedCallback
+    fun setOnBackPressedCallback(
+        isHold: Boolean = false,
+        callback: () -> Boolean,
+    ) {
+        if (onBackPressedCallback == null) {
+            isHoldBackPressedCallback = isHold
+            onBackPressedCallback = callback
         }
+    }
+
+    /**
+     * Clear on back press custom callback
+     */
+    fun clearCallbacks() {
+        isHoldBackPressedCallback = false
+        clearData()
     }
 
     companion object {
