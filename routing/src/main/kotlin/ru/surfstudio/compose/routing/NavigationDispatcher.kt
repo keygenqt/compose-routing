@@ -239,7 +239,7 @@ class NavigationDispatcher(
     /**
      * Clear all callback and back
      */
-    fun onBackPressedForce() {
+    fun onBackPressedWithClear() {
         clearAllData()
         onBackPressedCallbackForce = null
         onBackPressed()
