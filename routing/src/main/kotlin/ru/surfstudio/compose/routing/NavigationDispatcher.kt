@@ -114,9 +114,9 @@ class NavigationDispatcher(
     private var onBackPressedCallback: (() -> Boolean)? = null
 
     /**
-     * Hold callback on back press for change navigation
+     * Custom back press callback force
      */
-    private var isHoldBackPressedCallback: Boolean = false
+    private var onBackPressedCallbackForce: ((NavDestination?) -> Boolean)? = null
 
     /**
      * Custom navigator callback
@@ -128,12 +128,24 @@ class NavigationDispatcher(
     }
 
     /**
+     * Create flow for listening
+     */
+    @Composable
+    fun <T> backPressedDataFlow(value: T? = null): StateFlow<T?> {
+        val route by remember { mutableStateOf(currentDestination?.route.orEmpty()) }
+        if (!listListener.containsKey(route)) {
+            listListener[route] = MutableStateFlow(value)
+        }
+        return (listListener[route] as MutableStateFlow<T?>).asStateFlow()
+    }
+
+    /**
      * Callback listen change destination
      */
     private val callback = NavController.OnDestinationChangedListener { controller, _, _ ->
         controller.currentDestination?.let { destination ->
             // clear data
-            clearData()
+            clearAllData()
             // add start destination
             if (startDestination == null) {
                 startDestination = destination
@@ -160,19 +172,28 @@ class NavigationDispatcher(
     }
 
     /**
-     * Clear data after change route
+     * Clear pager data
      */
-    private fun clearData() {
-        // clear data
+    private fun clearPagerData() {
         pager = null
         scope = null
         pagerIndex = 0
         skipOnBackPressPager = listOf()
+    }
 
-        // clear callback if not hold
-        if (!isHoldBackPressedCallback) {
-            onBackPressedCallback = null
-        }
+    /**
+     * Clear custom callback
+     */
+    private fun clearCallbackData() {
+        onBackPressedCallback = null
+    }
+
+    /**
+     * Clear data after change route
+     */
+    private fun clearAllData() {
+        clearPagerData()
+        clearCallbackData()
     }
 
     override fun onResume(owner: LifecycleOwner) {
@@ -190,19 +211,9 @@ class NavigationDispatcher(
     }
 
     /**
-     * Check on back press custom callback
-     */
-    fun hasBackPressedCallback(): Boolean {
-        return onBackPressedCallback != null
-    }
-
-    /**
      * Check is navigation stack empty
      */
     fun hasEnabledCallbacks(): Boolean {
-        if (onBackPressedCallback != null) {
-            return false
-        }
         // check pager
         if (pager != null && pagerEnable && pager!!.currentPage > 0) {
             return true
@@ -216,10 +227,38 @@ class NavigationDispatcher(
     }
 
     /**
+     * Step to back on navigation with data
+     */
+    fun <T> onBackPressed(data: T) {
+        listListener[backDestination?.route]?.let {
+            (it as MutableStateFlow<T?>).value = data
+        }
+        onBackPressed()
+    }
+
+    /**
+     * Clear all callback and back
+     */
+    fun onBackPressedForce() {
+        clearAllData()
+        onBackPressedCallbackForce = null
+        onBackPressed()
+    }
+
+    /**
      * Step to back on navigation or pager
      */
     fun onBackPressed() {
-        if (onBackPressedCallback == null || onBackPressedCallback?.invoke() != false) {
+        // check state callback
+        val statePressCallback = onBackPressedCallback == null
+                || onBackPressedCallback?.invoke() == false
+
+        // check state callback force
+        val statePressCallbackForce = onBackPressedCallbackForce == null
+                || onBackPressedCallbackForce?.invoke(currentDestination) == false
+
+        // run back press
+        if (statePressCallback && statePressCallbackForce) {
             pager?.let {
                 if (!it.isScrollInProgress) {
                     if (it.currentPage > 0 && pagerEnable) {
@@ -239,28 +278,6 @@ class NavigationDispatcher(
                 backPressed()
             }
         }
-    }
-
-    /**
-     * Create flow for listening
-     */
-    @Composable
-    fun <T> onBackPressedData(value: T? = null): StateFlow<T?> {
-        val route by remember { mutableStateOf(currentDestination?.route.orEmpty()) }
-        if (!listListener.containsKey(route)) {
-            listListener[route] = MutableStateFlow(value)
-        }
-        return (listListener[route] as MutableStateFlow<T?>).asStateFlow()
-    }
-
-    /**
-     * Step to back on navigation with data
-     */
-    fun <T> onBackPressed(data: T) {
-        listListener[backDestination?.route]?.let {
-            (it as MutableStateFlow<T?>).value = data
-        }
-        onBackPressed()
     }
 
     /**
@@ -333,7 +350,7 @@ class NavigationDispatcher(
     /**
      * Add listen change pager
      */
-    fun listenChangePager(change: (page: Int, isBack: Boolean) -> Unit = { _, _ -> }) {
+    fun setListenChangePager(change: (page: Int, isBack: Boolean) -> Unit = { _, _ -> }) {
         pager?.let {
             scope?.launch {
                 snapshotFlow { it.currentPage }.collectLatest {
@@ -342,6 +359,13 @@ class NavigationDispatcher(
                 }
             }
         }
+    }
+
+    /**
+     * Clear data pager
+     */
+    fun removePager() {
+        clearPagerData()
     }
 
     /**
@@ -359,24 +383,45 @@ class NavigationDispatcher(
     }
 
     /**
-     * Set on back press custom callback
+     * Check has callback
      */
-    fun setOnBackPressedCallback(
-        isHold: Boolean = false,
-        callback: () -> Boolean,
-    ) {
-        if (onBackPressedCallback == null) {
-            isHoldBackPressedCallback = isHold
-            onBackPressedCallback = callback
-        }
+    fun hasBackPressedCallback(): Boolean {
+        return onBackPressedCallback != null
     }
 
     /**
-     * Clear on back press custom callback
+     * Set on back press custom callback
      */
-    fun clearCallbacks() {
-        isHoldBackPressedCallback = false
-        clearData()
+    fun setOnBackPressedCallback(callback: () -> Boolean) {
+        onBackPressedCallback = callback
+    }
+
+    /**
+     * Remove on back press custom callback
+     */
+    fun removeOnBackPressedCallback() {
+        clearCallbackData()
+    }
+
+    /**
+     * Check has callback force
+     */
+    fun hasBackPressedCallbackForce(): Boolean {
+        return onBackPressedCallbackForce != null
+    }
+
+    /**
+     * Set on back press custom callback force
+     */
+    fun setOnBackPressedCallbackForce(callback: (NavDestination?) -> Boolean) {
+        onBackPressedCallbackForce = callback
+    }
+
+    /**
+     * Remove on back press custom callback force
+     */
+    fun removeOnBackPressedCallbackForce() {
+        onBackPressedCallbackForce = null
     }
 
     companion object {
