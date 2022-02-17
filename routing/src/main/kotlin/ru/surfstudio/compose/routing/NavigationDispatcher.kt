@@ -15,6 +15,7 @@
  */
 package ru.surfstudio.compose.routing
 
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.runtime.*
@@ -137,6 +138,15 @@ class NavigationDispatcher(
             listListener[route] = MutableStateFlow(value)
         }
         return (listListener[route] as MutableStateFlow<T?>).asStateFlow()
+    }
+
+    /**
+     * Step to back on navigation with data
+     */
+    fun <T> onBackPressedFlowUpdate(data: T) {
+        listListener[backDestination?.route]?.let {
+            (it as MutableStateFlow<T?>).value = data
+        }
     }
 
     /**
