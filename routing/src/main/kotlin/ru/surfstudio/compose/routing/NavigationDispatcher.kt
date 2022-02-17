@@ -140,7 +140,7 @@ class NavigationDispatcher(
     }
 
     /**
-     * Step to back on navigation with data
+     * For clear/change navigation data
      */
     fun <T> onBackPressedFlowUpdate(data: T) {
         listListener[backDestination?.route]?.let {
