@@ -140,6 +140,15 @@ class NavigationDispatcher(
     }
 
     /**
+     * For clear/change navigation data
+     */
+    fun <T> onBackPressedFlowUpdate(data: T) {
+        listListener[backDestination?.route]?.let {
+            (it as MutableStateFlow<T?>).value = data
+        }
+    }
+
+    /**
      * Callback listen change destination
      */
     private val callback = NavController.OnDestinationChangedListener { controller, _, _ ->
