@@ -15,7 +15,6 @@
  */
 package ru.surfstudio.compose.routing
 
-import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.runtime.*
