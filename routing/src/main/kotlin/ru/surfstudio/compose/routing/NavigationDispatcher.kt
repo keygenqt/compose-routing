@@ -58,17 +58,6 @@ class NavigationDispatcher(
         private set
 
     /**
-     * Save start destination
-     */
-    var startDestination: NavDestination? = null
-        private set
-
-    /**
-     * Save back destination
-     */
-    private var backDestination: NavDestination? = null
-
-    /**
      * Data flow for back with data
      */
     private val listListener: MutableMap<String, Any> = mutableMapOf()
@@ -77,11 +66,6 @@ class NavigationDispatcher(
      * CoroutineScope for pager
      */
     private var scope: CoroutineScope? = null
-
-    /**
-     * Save count open start destination
-     */
-    private var firstDestinationCount: Int = 0
 
     /**
      * Change destination direction
@@ -128,6 +112,26 @@ class NavigationDispatcher(
     }
 
     /**
+     * Save routing list
+     */
+    private var destinationPathList: MutableList<NavDestination> = mutableListOf()
+
+    /**
+     * Get back destination
+     */
+    val backDestination get() = destinationPathList.take(destinationPathList.size - 1).lastOrNull()
+
+    /**
+     * Get first destination
+     */
+    val startDestination get() = destinationPathList.firstOrNull()
+
+    /**
+     * Count first destination for clear all stack
+     */
+    private val firstDestinationCount get() = destinationPathList.filter { startDestination?.route == it.route }.size
+
+    /**
      * Create flow for listening
      */
     @Composable
@@ -153,19 +157,17 @@ class NavigationDispatcher(
      */
     private val callback = NavController.OnDestinationChangedListener { controller, _, _ ->
         controller.currentDestination?.let { destination ->
+            // save path routing
+            if (controller.previousBackStackEntry?.destination == null) {
+                destinationPathList.clear()
+            }
+            if (isBack && destinationPathList.isNotEmpty()) {
+                destinationPathList.removeLast()
+            } else {
+                destinationPathList.add(destination)
+            }
             // clear data
             clearAllData()
-            // add start destination
-            if (startDestination == null) {
-                startDestination = destination
-                firstDestinationCount = 0
-            }
-            // change counter open start destination
-            if (startDestination?.route == destination.route && !isBack) {
-                firstDestinationCount++
-            }
-            // save back destination
-            backDestination = currentDestinationMutableFlow.value
             // save current destination
             currentDestinationMutableFlow.value = destination
             // disable destination direction
@@ -246,6 +248,18 @@ class NavigationDispatcher(
     }
 
     /**
+     * Step to back route on navigation with data
+     */
+    fun <T> onBackPressed(route: String?, data: T) {
+        destinationPathList.reversed().find { it.route == route }?.let { destination ->
+            controller.popBackStack(destination.id, false)
+            listListener[destination.route]?.let {
+                (it as MutableStateFlow<T?>).value = data
+            }
+        }
+    }
+
+    /**
      * Clear all callback and back
      */
     fun onBackPressedWithClear() {
@@ -294,10 +308,6 @@ class NavigationDispatcher(
      */
     private fun backPressed() {
         isBack = true
-        // change counter open start destination
-        if (startDestination?.route == currentDestinationMutableFlow.value?.route) {
-            firstDestinationCount--
-        }
         // disable callback
         navigatorCallback.remove()
         // onBackPressed
@@ -336,8 +346,6 @@ class NavigationDispatcher(
                     controller.popBackStack(des.id, true)
                 }
             }
-            // clear first destination
-            startDestination = null
             // emit routes
             routes.forEach {
                 it.invoke()
