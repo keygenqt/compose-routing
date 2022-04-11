@@ -95,7 +95,7 @@ class NavigationDispatcher(
     /**
      * Custom back press callback
      */
-    private var onBackPressedCallback: (() -> Boolean)? = null
+    private var onBackPressedCallbacks: MutableList<(() -> Boolean)> = mutableListOf()
 
     /**
      * Custom back press callback force
@@ -195,8 +195,8 @@ class NavigationDispatcher(
     /**
      * Clear custom callback
      */
-    private fun clearCallbackData() {
-        onBackPressedCallback = null
+    private fun clearCallbacksData() {
+        onBackPressedCallbacks.clear()
     }
 
     /**
@@ -204,7 +204,7 @@ class NavigationDispatcher(
      */
     private fun clearAllData() {
         clearPagerData()
-        clearCallbackData()
+        clearCallbacksData()
     }
 
     override fun onResume(owner: LifecycleOwner) {
@@ -273,8 +273,8 @@ class NavigationDispatcher(
      */
     fun onBackPressed() {
         // check state callback
-        val statePressCallback = onBackPressedCallback == null
-                || onBackPressedCallback?.invoke() == false
+        val statePressCallback = onBackPressedCallbacks.isEmpty()
+                || onBackPressedCallbacks.map { it.invoke() }.contains(false)
 
         // check state callback force
         val statePressCallbackForce = onBackPressedCallbackForce == null
@@ -400,24 +400,24 @@ class NavigationDispatcher(
     }
 
     /**
-     * Check has callback
+     * Check has callbacks
      */
-    fun hasBackPressedCallback(): Boolean {
-        return onBackPressedCallback != null
+    fun hasBackPressedCallbacks(): Boolean {
+        return onBackPressedCallbacks.isNotEmpty()
     }
 
     /**
-     * Set on back press custom callback
+     * Add on back press custom callback
      */
-    fun setOnBackPressedCallback(callback: () -> Boolean) {
-        onBackPressedCallback = callback
+    fun addOnBackPressedCallback(callback: () -> Boolean) {
+        onBackPressedCallbacks.add(callback)
     }
 
     /**
      * Remove on back press custom callback
      */
-    fun removeOnBackPressedCallback() {
-        clearCallbackData()
+    fun removeOnBackPressedCallback(callback: () -> Boolean) {
+        onBackPressedCallbacks.remove(callback)
     }
 
     /**
