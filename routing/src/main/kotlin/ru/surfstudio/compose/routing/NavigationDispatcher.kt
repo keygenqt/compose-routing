@@ -400,14 +400,14 @@ class NavigationDispatcher(
     }
 
     /**
-     * Check has callback
+     * Check has callbacks
      */
-    fun hasBackPressedCallback(): Boolean {
+    fun hasBackPressedCallbacks(): Boolean {
         return onBackPressedCallbacks.isNotEmpty()
     }
 
     /**
-     * Set on back press custom callback
+     * Add on back press custom callback
      */
     fun addOnBackPressedCallback(callback: () -> Boolean) {
         onBackPressedCallbacks.add(callback)
