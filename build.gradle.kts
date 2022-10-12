@@ -37,9 +37,18 @@ android {
     }
 }
 
+// https://google.github.io/accompanist/
+val accompanistVersion = "0.26.5-rc"
+// https://developer.android.com/jetpack/androidx/releases/lifecycle
+val lifecycleVersion = "2.5.1"
+// https://github.com/Kotlin/kotlinx.coroutines/releases
+val coroutinesVersion = "1.6.4"
+// https://developer.android.com/jetpack/compose/navigation
+val navigationComposeVersion = "2.5.2"
+
 dependencies {
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
-    implementation("com.google.accompanist:accompanist-pager:0.22.0-rc")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
-    implementation("androidx.navigation:navigation-compose:2.4.0-rc01")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
+    implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    implementation("androidx.navigation:navigation-compose:$navigationComposeVersion")
 }
